@@ -1,0 +1,19 @@
+#!/bin/bash
+#PBS -q small
+#PBS -l mem=95G
+#set -euo pipefail
+
+cd ${PBS_O_WORKDIR}
+
+mkdir -p analysis/WCA && cd $_
+
+# copy files , change prefix
+cp ../../data/dataset/*.gbff .
+for filename in *.gbff; do mv $filename ${filename%.gbff}.gbk; done
+
+# each.pl
+data="R0"
+dir="."
+perl -I/home/haruo/g-language-1.9.1/lib ../../scripts/each.pl $dir $data > log.each.$data.txt
+
+ Rscript --vanilla ../../scripts/g_each.R .
